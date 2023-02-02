@@ -1,6 +1,6 @@
 # Setting up of Data Infrastructure on Google Cloud Platform
 
-To automate the process of setting up a data infrastructure that consists of a Compute Engine, a Cloud Storage bucket, and a table in Bigquery.
+To automate the process of setting up a data infrastructure that consists of a Compute Engine, a Cloud Storage bucket, and a table in BigQuery.
 
 ## Prerequisite
 * GCP Account
