@@ -1,0 +1,11 @@
+# User-defined ignore
+**/__pycache__
+**/.ipynb_checkpoints
+**/.terraform
+**/*.csv
+**/*.json
+**/*.tfstate
+**/*.tfstate.*
+**/**.terraform
+**/**.terraform.lock.*
+**/.env

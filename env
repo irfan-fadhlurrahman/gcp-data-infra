@@ -1,0 +1,13 @@
+# Project
+USER=your-username
+SSH_IDENTIFIER_NAME=your-unique-name
+GCP_BILLING_ACC_ID=your-billing-acc-id
+GCP_PROJECT_ID=your-project-id
+
+# General
+GCP_REGION=region
+GCP_ZONE=zone
+SERVICE_ACCOUNT_NAME=vm-name
+GCP_CREDENTIALS="path/to/vm-name.json"
+
+
