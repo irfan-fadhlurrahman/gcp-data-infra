@@ -135,12 +135,13 @@ ssh-keygen -t rsa -f ~/.ssh/${GCP_PROJECT_ID} -C ${USER} -b 2048
 
 echo "Add username to SSH public key with format (USERNAME:KEY) and add to metadata"
 cat ~/.ssh/${GCP_PROJECT_ID}.pub > key_with_user
-nano key_with_user
+var="${USER}:$(<key_with_user)"
 gcloud compute project-info add-metadata \
 --metadata-from-file=ssh-keys=key_with_user
 rm key_with_user
 
-echo "Find External IP before build connection via SSH https://cloud.google.com/compute/docs/instances/view-ip-address"
+echo "Find VM External IP before build connection via SSH https://cloud.google.com/compute/docs/instances/view-ip-address"
+gcloud compute instances list
 ```
 
 ### Run all resources
