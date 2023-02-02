@@ -2,11 +2,11 @@
 
 To automate the process of setting up a data infrastructure that consists of a Compute Engine, a Cloud Storage bucket, and a table in Bigquery.
 
-## Prerequisite:
+## Prerequisite
 * GCP Account
 * Installed Google Cloud SDK
 
-## Main tools: 
+## Main tools
 * Terraform
 * Google Cloud SDK
 
