@@ -10,6 +10,114 @@ To automate the process of setting up a data infrastructure that consists of a C
 * Terraform
 * Google Cloud SDK
 
+## Terraform Configuration
+0. Terraform Variables
+
+The following below are variables used to run a data infrastructure on GCP.
+* Project ID
+* Service Account File
+* Region
+* Zone
+* Disk Image
+    default: **ubuntu-os-cloud/ubuntu-2204-jammy-v20230114**
+* Disk Type
+    default: **pd-balanced**
+* Disk Size (in GB)
+    default: **40**
+* Instance Image
+    default: **c2d-standard-2** (Compute-Optimized 2-Core 8 GB RAM)
+* Bucket Name
+    default: dtc_data_lake
+* Storage Class
+    default: STANDARD
+* BigQuery Table Name
+    default: trips_data_all
+
+1. VPC Network
+```terraform
+resource "google_compute_network" "vpc_network" {
+  name = "terraform-network"
+}
+```
+2. Compute Disk for VM
+```terraform
+resource "google_compute_disk" "vm-disk-1" {
+    name = "vm-disk-1"
+    image = var.disk_image
+    zone = var.zone
+    type = var.disk_type
+    size = var.disk_size_gb
+}
+```
+3. Compute Instance
+```terraform
+resource "google_compute_instance" "vm-instance-1" {
+    name         = "vm-instance-1"
+    machine_type = var.cpu_name
+    tags         = ["daily-vm-instance"]
+    zone         = var.zone
+    
+    boot_disk {
+      source = google_compute_disk.vm-disk-1.self_link
+      }
+
+    network_interface {
+      network = google_compute_network.vpc_network.name
+      access_config {
+
+      }
+    }
+}
+```
+4. Firewall for SSH Access Rule
+```terraform
+resource "google_compute_firewall" "ssh-rule" {
+  name = "allow-ssh"
+  network = google_compute_network.vpc_network.name
+  allow {
+    protocol = "tcp"
+    ports = ["22"]
+  }
+  target_tags = ["daily-vm-instance"]
+  source_ranges = ["0.0.0.0/0"]
+}
+```
+5. Data Lake Bucket
+```terraform
+resource "google_storage_bucket" "data-lake-bucket" {
+  name          = "${local.data_lake_bucket}_${var.project_id}" # Concatenating DL bucket & Project name for unique naming
+  location      = var.region
+
+  # Optional, but recommended settings:
+  storage_class = var.storage_class
+  uniform_bucket_level_access = true
+
+  versioning {
+    enabled     = true
+  }
+
+  lifecycle_rule {
+    action {
+      type = "Delete"
+    }
+    condition {
+      age = 30  // days
+    }
+  }
+
+  force_destroy = true
+}
+```
+
+6. BigQuery Data Warehouse 
+```terraform
+resource "google_bigquery_dataset" "dataset" {
+  dataset_id = var.BQ_DATASET
+  project    = var.project_id
+  location   = var.region
+}
+```
+
 ## Setup
 
 ### Install Terraform
